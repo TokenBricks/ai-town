@@ -13,6 +13,9 @@ import MusicButton from './components/buttons/MusicButton.tsx';
 import Button from './components/buttons/Button.tsx';
 import InteractButton from './components/buttons/InteractButton.tsx';
 import FreezeButton from './components/FreezeButton.tsx';
+import {
+  ConnectWallet,
+} from "@thirdweb-dev/react";
 
 export default function Home() {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -61,7 +64,7 @@ export default function Home() {
           </p>
         </div>
       </ReactModal>
-      <div className="p-6 absolute top-0 right-0 z-10 text-2xl">
+      <div className="p-6 absolute top-0 right-48 z-10 text-2xl">
         <SignedIn>
           <UserButton afterSignOutUrl="/ai-town" />
         </SignedIn>
@@ -69,6 +72,9 @@ export default function Home() {
         <SignedOut>
           <LoginButton />
         </SignedOut>
+      </div>
+      <div className="p-6 absolute top-0 right-0 z-10 text-2xl">
+        <ConnectWallet />
       </div>
 
       <div className="w-full min-h-screen relative isolate overflow-hidden p-6 lg:p-8 shadow-2xl flex flex-col justify-center">
