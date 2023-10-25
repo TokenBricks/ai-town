@@ -19,6 +19,7 @@ import {
 } from "@thirdweb-dev/react";
 import ClaimTBAButton from './components/buttons/ClaimTBAButton.tsx';
 import MintNFTModal from "./components/MintNFTModal.tsx";
+import InteractSwitchButton from "./components/buttons/InteractSwitchButton.tsx";
 
 export default function Home() {
   const address = useAddress();
@@ -41,7 +42,7 @@ export default function Home() {
         <div className="font-body">
           <h1 className="text-center text-6xl font-bold font-display game-title">Help</h1>
           <p>
-            Welcome to AI town. AI town supports both anonymous <i>spectators</i> and logged in{' '}
+            Welcome to AI Cosmos. AI Cosmos supports both anonymous <i>spectators</i> and logged in{' '}
             <i>interactivity</i>.
           </p>
           <h2 className="text-4xl mt-4">Spectating</h2>
@@ -69,7 +70,7 @@ export default function Home() {
             or moving away.
           </p>
           <p className="mt-4">
-            AI town only supports SOME FINITE NUMBER of humans at a time. If other humans are
+            AI Cosmos only supports SOME FINITE NUMBER of humans at a time. If other humans are
             waiting, each human session is limited to five minutes.
           </p>
         </div>
@@ -89,7 +90,7 @@ export default function Home() {
 
       <div className="w-full min-h-screen relative isolate overflow-hidden p-6 lg:p-8 shadow-2xl flex flex-col justify-center">
         <h1 className="mx-auto text-center text-6xl sm:text-8xl lg:text-9xl font-bold font-display leading-none tracking-wide game-title">
-          AI Town
+          AI Cosmos
         </h1>
 
         <p className="mx-auto my-4 text-center text-xl sm:text-2xl text-white leading-tight shadow-solid">
@@ -104,9 +105,9 @@ export default function Home() {
           <div className="flex gap-4 flex-grow pointer-events-none">
             <FreezeButton />
             <MusicButton />
-            <Button href="https://github.com/a16z-infra/ai-town" imgUrl={starImg}>
-              Star
-            </Button>
+            {/*<Button href="https://github.com/a16z-infra/ai-town" imgUrl={starImg}>*/}
+            {/*  Star*/}
+            {/*</Button>*/}
             {/*<InteractButton />*/}
             {
               address &&
@@ -114,16 +115,17 @@ export default function Home() {
                 setIsMintNFTModalOpen(true)
               }}/>
             }
+            {address && <InteractSwitchButton/>}
             <Button imgUrl={helpImg} onClick={() => setHelpModalOpen(true)}>
               Help
             </Button>
           </div>
-          <a href="https://a16z.com">
-            <img className="w-8 h-8 pointer-events-auto" src={a16zImg} alt="a16z" />
-          </a>
-          <a href="https://convex.dev">
-            <img className="w-20 h-8 pointer-events-auto" src={convexImg} alt="Convex" />
-          </a>
+          {/*<a href="https://a16z.com">*/}
+          {/*  <img className="w-8 h-8 pointer-events-auto" src={a16zImg} alt="a16z" />*/}
+          {/*</a>*/}
+          {/*<a href="https://convex.dev">*/}
+          {/*  <img className="w-20 h-8 pointer-events-auto" src={convexImg} alt="Convex" />*/}
+          {/*</a>*/}
         </footer>
         <ToastContainer position="bottom-right" autoClose={2000} closeOnClick theme="dark" />
       </div>

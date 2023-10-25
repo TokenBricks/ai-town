@@ -7,6 +7,7 @@ import { Doc, Id } from './_generated/dataModel';
 import { internal } from './_generated/api';
 import { startEngine, stopEngine } from './engine/game';
 import { conversationMember } from './game/conversationMembers';
+import {createHumanAgent} from "./game/agents.ts";
 
 export const defaultWorld = query({
   handler: async (ctx) => {

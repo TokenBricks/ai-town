@@ -59,6 +59,7 @@ export const agents = defineTable({
   toRemember: v.optional(v.id('conversations')),
   lastConversation: v.optional(v.number()),
   lastInviteAttempt: v.optional(v.number()),
+  isActive: v.boolean(),
 
   inProgressOperation: v.optional(
     v.object({
@@ -126,6 +127,7 @@ export const createAgent = inputHandler({
       playerId,
       identity: description.identity,
       plan: description.plan,
+      isActive: true,
     });
     return null;
   },

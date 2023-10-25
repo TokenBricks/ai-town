@@ -16,7 +16,8 @@ export const join = inputHandler({
     tokenIdentifier: v.optional(v.string()),
   },
   handler: async (game, now, args) => {
-    return await joinGame(
+
+    const playerId = await joinGame(
       game,
       now,
       args.name,
@@ -24,6 +25,14 @@ export const join = inputHandler({
       args.description,
       args.tokenIdentifier,
     );
+    // await game.agents.insert({
+    //   worldId: game.world._id,
+    //   playerId: playerId,
+    //   identity: args.description,
+    //   plan: 'You want to make friends with other people',
+    //   isActive: false
+    // })
+    return playerId;
   },
 });
 // ...or leave, disabling the specified player.
