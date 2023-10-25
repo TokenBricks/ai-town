@@ -96,6 +96,8 @@ export const userStatus = query({
 export const joinWorld = mutation({
   args: {
     worldId: v.id('worlds'),
+    name: v.string(),
+    description: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -123,9 +125,9 @@ export const joinWorld = mutation({
       worldId: world._id,
       name: 'join',
       args: {
-        name: identity.givenName,
+        name: args.name,
         character: characters[Math.floor(Math.random() * characters.length)].name,
-        description: `${identity.givenName} is a human player`,
+        description: args.description,
         tokenIdentifier,
       },
     });

@@ -15,12 +15,22 @@ import InteractButton from './components/buttons/InteractButton.tsx';
 import FreezeButton from './components/FreezeButton.tsx';
 import {
   ConnectWallet,
+  useAddress
 } from "@thirdweb-dev/react";
+import ClaimTBAButton from './components/buttons/ClaimTBAButton.tsx';
+import MintNFTModal from "./components/MintNFTModal.tsx";
 
 export default function Home() {
+  const address = useAddress();
+
   const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [ isMintNFTModalOpen, setIsMintNFTModalOpen ] = useState(false);
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-between font-body game-background">
+      <MintNFTModal
+        isOpen={isMintNFTModalOpen}
+        onRequestClose={() => setIsMintNFTModalOpen(false)}
+      />
       <ReactModal
         isOpen={helpModalOpen}
         onRequestClose={() => setHelpModalOpen(false)}
@@ -97,7 +107,13 @@ export default function Home() {
             <Button href="https://github.com/a16z-infra/ai-town" imgUrl={starImg}>
               Star
             </Button>
-            <InteractButton />
+            {/*<InteractButton />*/}
+            {
+              address &&
+              <ClaimTBAButton onClick={() => {
+                setIsMintNFTModalOpen(true)
+              }}/>
+            }
             <Button imgUrl={helpImg} onClick={() => setHelpModalOpen(true)}>
               Help
             </Button>

@@ -220,7 +220,8 @@ export default function PlayerDetails({
       <div className="desc my-6">
         <p className="leading-tight -m-4 bg-brown-700 text-lg">
           {!isMe && player.description}
-          {isMe && <i>This is you!</i>}
+          {isMe && <i>This is you! {`\n`}</i>}
+          {isMe &&  player.description}
           {!isMe && inConversationWithMe && (
             <>
               <br />
