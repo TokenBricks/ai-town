@@ -7,7 +7,6 @@ import { Doc, Id } from './_generated/dataModel';
 import { internal } from './_generated/api';
 import { startEngine, stopEngine } from './engine/game';
 import { conversationMember } from './game/conversationMembers';
-import {createHumanAgent} from "./game/agents.ts";
 
 export const defaultWorld = query({
   handler: async (ctx) => {
@@ -105,9 +104,9 @@ export const joinWorld = mutation({
     if (!identity) {
       throw new Error(`Not logged in`);
     }
-    if (!identity.givenName) {
-      throw new Error(`Missing givenName on ${JSON.stringify(identity)}`);
-    }
+    // if (!identity.givenName) {
+    //   throw new Error(`Missing givenName on ${JSON.stringify(identity)}`);
+    // }
     const world = await ctx.db.get(args.worldId);
     if (!world) {
       throw new Error(`Invalid world ID: ${args.worldId}`);
