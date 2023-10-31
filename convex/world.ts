@@ -80,7 +80,7 @@ export const offlineInactivePlayers = internalMutation({
               q.eq('worldId', world._id).eq('active', true),
           )
           .collect();
-      const inactivityTimeout = 60 * 1000
+      const inactivityTimeout = 30 * 1000
       const offlineHumans = players.filter(p => {
         if (p.human && p.presenceTime) {
           if (p.presenceTime < Date.now() - inactivityTimeout) {
@@ -89,7 +89,6 @@ export const offlineInactivePlayers = internalMutation({
         }
         return false;
       })
-      console.log('-offline-', offlineHumans.map(p => console.log(p.name)))
       for (const player of offlineHumans) {
         await sendInput(ctx, {
           worldId: world._id,
@@ -102,6 +101,32 @@ export const offlineInactivePlayers = internalMutation({
     }
   }
 });
+export const activePlayer = mutation({
+  args: {
+    worldId: v.id('worlds'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const { tokenIdentifier } = identity;
+    const world = await ctx.db.get(args.worldId);
+    if (!world) {
+      throw new Error(`Invalid world ID: ${args.worldId}`);
+    }
+    const existingPlayer = await ctx.db
+        .query('players')
+        .withIndex('active', (q) =>
+            q.eq('worldId', world._id).eq('active', true).eq('human', tokenIdentifier),
+        )
+        .first();
+    if (!existingPlayer) {
+      return;
+    }
+    ctx.db.patch(existingPlayer._id, {presenceTime: Date.now()})
+  }
+})
 
 export const userStatus = query({
   args: {

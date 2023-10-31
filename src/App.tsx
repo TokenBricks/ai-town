@@ -23,7 +23,7 @@ import InteractSwitchButton from "./components/buttons/InteractSwitchButton.tsx"
 // import OnlineButton from "./components/buttons/OnlineButton.tsx";
 import {useMutation, useQuery} from "convex/react";
 import {api} from "../convex/_generated/api";
-import {defaultWorld} from "../convex/world.ts";
+import {activePlayer, defaultWorld} from "../convex/world.ts";
 
 export default function Home() {
   const address = useAddress();
@@ -31,6 +31,7 @@ export default function Home() {
   const userPlayerId = useQuery(api.world.userStatus, world ? { worldId: world._id } : 'skip');
   const isPlaying = !!userPlayerId;
   const online = useMutation(api.world.onlineWorld);
+  const activePlayer = useMutation(api.world.activePlayer);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [ isMintNFTModalOpen, setIsMintNFTModalOpen ] = useState(false);
   useEffect(() => {
@@ -39,8 +40,9 @@ export default function Home() {
         return;
       }
       if (!isPlaying) {
-        console.log('online')
-        online({ worldId: world._id });
+        online({worldId: world._id});
+      } else {
+        activePlayer({worldId: world._id});
       }
     }, 5 * 1000)
     return () => clearInterval(intervalId)
