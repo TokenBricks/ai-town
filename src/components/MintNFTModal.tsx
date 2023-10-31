@@ -20,7 +20,6 @@ export default function MintNFTModal({
     const address = useAddress();
     const { contract: nftDropContract } = useContract(nftDropAddress, "nft-drop");
     const { data: nfts, isLoading } = useOwnedNFTs(nftDropContract, address);
-    const inputRef = useRef<HTMLParagraphElement>(null);
 
     const { isAuthenticated } = useConvexAuth();
     const world = useQuery(api.world.defaultWorld);
@@ -72,10 +71,11 @@ export default function MintNFTModal({
                     <Web3Button
                         contractAddress={nftDropAddress}
                         action={async (contract) => {
-                            await contract?.erc721.claim(1);
+                            // await contract?.erc721.claim(1);
+                            joinOrLeaveGame()
                         }}
                         onSuccess={() => {
-                            joinOrLeaveGame()
+                            // joinOrLeaveGame()
                             onRequestClose()
                             toast.success(`"NFT Minted!`)
                         }}

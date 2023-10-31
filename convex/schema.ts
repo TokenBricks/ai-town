@@ -38,7 +38,11 @@ export default defineSchema({
   })
     .index('conversationId', ['conversationId'])
     .index('messageUuid', ['conversationId', 'messageUuid']),
-
+  presence: defineTable({
+    playerId: v.id('players'),
+    updated: v.number(),
+    data: v.any(),
+  }),
   ...gameTables,
   ...agentTables,
 });

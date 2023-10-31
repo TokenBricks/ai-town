@@ -9,5 +9,9 @@ crons.interval(
   { seconds: IDLE_WORLD_TIMEOUT / 1000 },
   internal.world.stopInactiveWorlds,
 );
-
+crons.interval(
+    'offline inactive players',
+    { seconds: 5 },
+    internal.world.offlineInactivePlayers,
+)
 export default crons;

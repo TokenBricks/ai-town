@@ -7,7 +7,7 @@ import starImg from '../assets/star.svg';
 import helpImg from '../assets/help.svg';
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import LoginButton from './components/buttons/LoginButton.tsx';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import ReactModal from 'react-modal';
 import MusicButton from './components/buttons/MusicButton.tsx';
 import Button from './components/buttons/Button.tsx';
@@ -20,12 +20,31 @@ import {
 import ClaimTBAButton from './components/buttons/ClaimTBAButton.tsx';
 import MintNFTModal from "./components/MintNFTModal.tsx";
 import InteractSwitchButton from "./components/buttons/InteractSwitchButton.tsx";
+// import OnlineButton from "./components/buttons/OnlineButton.tsx";
+import {useMutation, useQuery} from "convex/react";
+import {api} from "../convex/_generated/api";
+import {defaultWorld} from "../convex/world.ts";
 
 export default function Home() {
   const address = useAddress();
-
+  const world = useQuery(api.world.defaultWorld);
+  const userPlayerId = useQuery(api.world.userStatus, world ? { worldId: world._id } : 'skip');
+  const isPlaying = !!userPlayerId;
+  const online = useMutation(api.world.onlineWorld);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [ isMintNFTModalOpen, setIsMintNFTModalOpen ] = useState(false);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!world) {
+        return;
+      }
+      if (!isPlaying) {
+        console.log('online')
+        online({ worldId: world._id });
+      }
+    }, 5 * 1000)
+    return () => clearInterval(intervalId)
+  })
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-between font-body game-background">
       <MintNFTModal
@@ -119,6 +138,7 @@ export default function Home() {
             <Button imgUrl={helpImg} onClick={() => setHelpModalOpen(true)}>
               Help
             </Button>
+            {/*<OnlineButton/>*/}
           </div>
           {/*<a href="https://a16z.com">*/}
           {/*  <img className="w-8 h-8 pointer-events-auto" src={a16zImg} alt="a16z" />*/}

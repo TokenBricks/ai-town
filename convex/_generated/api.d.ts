@@ -36,6 +36,7 @@ import type * as http from "../http";
 import type * as init from "../init";
 import type * as messages from "../messages";
 import type * as music from "../music";
+import type * as presence from "../presence";
 import type * as testing from "../testing";
 import type * as util_assertNever from "../util/assertNever";
 import type * as util_asyncMap from "../util/asyncMap";
@@ -78,6 +79,7 @@ declare const fullApi: ApiFromModules<{
   init: typeof init;
   messages: typeof messages;
   music: typeof music;
+  presence: typeof presence;
   testing: typeof testing;
   "util/assertNever": typeof util_assertNever;
   "util/asyncMap": typeof util_asyncMap;

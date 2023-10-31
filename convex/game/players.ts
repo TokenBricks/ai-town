@@ -55,7 +55,7 @@ export const players = defineTable({
 
   pathfinding: v.optional(pathfinding),
   activity: v.optional(activity),
-
+  presenceTime: v.optional(v.number()),
   // Pointer to the locations table for the player's current position.
   locationId: v.id('locations'),
 }).index('active', ['worldId', 'active', 'human']);
@@ -132,6 +132,7 @@ export async function joinGame(
     human: tokenIdentifier,
     character,
     locationId,
+    presenceTime: now,
   });
   return playerId;
 }
@@ -149,3 +150,11 @@ export async function leaveGame(game: AiTown, now: number, playerId: Id<'players
   }
   player.active = false;
 }
+
+export async function onlineGame(game: AiTown, now: number, playerId: Id<'players'>) {
+
+  await game.players.db.patch(playerId, { active: true, presenceTime: now })
+  const player = game.players.lookup(playerId);
+  player.active = true
+}
+

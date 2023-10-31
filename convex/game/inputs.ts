@@ -5,7 +5,7 @@ import { conversationInputs } from './conversations';
 import { point } from '../util/types';
 import type { AiTown } from './aiTown';
 import { inputHandler } from './inputHandler';
-import { joinGame, leaveGame } from './players';
+import {joinGame, leaveGame, onlineGame} from './players';
 
 // Join, creating a new player...
 export const join = inputHandler({
@@ -35,6 +35,25 @@ export const join = inputHandler({
     return playerId;
   },
 });
+const online = inputHandler({
+    args: {
+        playerId: v.id("players"),
+    },
+    handler: async (game: AiTown, now: number, { playerId }) => {
+        await onlineGame(game, now, playerId);
+        return null;
+    }
+})
+
+const offline = inputHandler({
+    args: {
+        playerId: v.id("players"),
+    },
+    handler: async (game: AiTown, now: number, { playerId }) => {
+        await leaveGame(game, now, playerId);
+        return null;
+    }
+})
 // ...or leave, disabling the specified player.
 const leave = inputHandler({
   args: {
@@ -63,6 +82,8 @@ const moveTo = inputHandler({
 export const inputs = {
   join,
   leave,
+  online,
+  offline,
   moveTo,
   // Inputs for the messaging layer.
   ...conversationInputs,

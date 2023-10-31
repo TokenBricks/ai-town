@@ -70,6 +70,39 @@ export const stopInactiveWorlds = internalMutation({
   },
 });
 
+export const offlineInactivePlayers = internalMutation({
+  handler: async (ctx) => {
+    const worlds = await ctx.db.query('worlds').collect();
+    for (const world of worlds) {
+      const players = await ctx.db
+          .query('players')
+          .withIndex('active', (q) =>
+              q.eq('worldId', world._id).eq('active', true),
+          )
+          .collect();
+      const inactivityTimeout = 60 * 1000
+      const offlineHumans = players.filter(p => {
+        if (p.human && p.presenceTime) {
+          if (p.presenceTime < Date.now() - inactivityTimeout) {
+            return true
+          }
+        }
+        return false;
+      })
+      console.log('-offline-', offlineHumans.map(p => console.log(p.name)))
+      for (const player of offlineHumans) {
+        await sendInput(ctx, {
+          worldId: world._id,
+          name: 'offline',
+          args: {
+            playerId: player._id,
+          },
+        })
+      }
+    }
+  }
+});
+
 export const userStatus = query({
   args: {
     worldId: v.id('worlds'),
@@ -166,6 +199,75 @@ export const leaveWorld = mutation({
     });
   },
 });
+
+export const onlineWorld = mutation({
+    args: {
+        worldId: v.id('worlds'),
+        // playerId: v.id('players'),
+    },
+    handler: async (ctx, args) => {
+      const identity = await ctx.auth.getUserIdentity();
+      if (!identity) {
+        throw new Error(`Not logged in`);
+      }
+      const { tokenIdentifier } = identity;
+      const world = await ctx.db.get(args.worldId);
+      if (!world) {
+        throw new Error(`Invalid world ID: ${args.worldId}`);
+      }
+      const existingPlayer = await ctx.db
+          .query('players')
+          .withIndex('active', (q) =>
+              q.eq('worldId', world._id).eq('active', false).eq('human', tokenIdentifier),
+          )
+          .first();
+      console.log('-existingPlayer-', existingPlayer)
+      if (!existingPlayer) {
+        return;
+      }
+      await sendInput(ctx, {
+        worldId: world._id,
+        name: 'online',
+        args: {
+          playerId: existingPlayer._id,
+        },
+      });
+    }
+})
+export const offlineWorld = mutation({
+  args: {
+    worldId: v.id('worlds'),
+    // playerId: v.id('players'),
+  },
+    handler: async (ctx, args) => {
+      const identity = await ctx.auth.getUserIdentity();
+      if (!identity) {
+        throw new Error(`Not logged in`);
+      }
+      const { tokenIdentifier } = identity;
+      const world = await ctx.db.get(args.worldId);
+      if (!world) {
+        throw new Error(`Invalid world ID: ${args.worldId}`);
+      }
+      const existingPlayer = await ctx.db
+          .query('players')
+          .withIndex('active', (q) =>
+              q.eq('worldId', world._id).eq('active', true).eq('human', tokenIdentifier),
+          )
+          .first();
+      console.log('existingPlayer', existingPlayer)
+      if (!existingPlayer) {
+        return;
+      }
+      await sendInput(ctx, {
+        worldId: world._id,
+        name: 'offline',
+        args: {
+          playerId: existingPlayer._id,
+        },
+      });
+    }
+})
 
 export const sendWorldInput = mutation({
   args: {
