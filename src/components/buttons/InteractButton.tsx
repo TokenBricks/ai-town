@@ -20,7 +20,7 @@ export default function InteractButton() {
       void leave({ worldId: world._id });
     } else {
       console.log(`Joining game`);
-      void join({ worldId: world._id });
+      // void join({ worldId: world._id });
     }
   };
   if (!isAuthenticated || userPlayerId === undefined) {
